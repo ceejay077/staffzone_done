@@ -1,10 +1,27 @@
 import config from "@config/config.json";
 import { markdownify } from "@lib/utils/textConverter";
+import emailjs from '@emailjs/browser';
 
 const Contact = ({ data }) => {
   const { frontmatter } = data;
   const { title, info } = frontmatter;
   const { contact_form_action } = config.params;
+
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs.sendForm('service_9cd2dy3', 'template_49omegs', e.target, 'cfjBnmwb9MjjU5Jnz')
+      .then((result) => {
+        console.log(result.text);
+        alert('Thank You for Contacting Staff Zone')
+      }, (error) => {
+        console.log(error.text);
+        alert('There was issue with our end. please try again latter')
+      });
+
+  };
+
 
   return (
     <section className="section">
@@ -14,8 +31,8 @@ const Contact = ({ data }) => {
           <div className="col-12 md:col-6 lg:col-7 pt-4">
             <form
               className="contact-form"
-              method="POST"
-              action={contact_form_action}
+              onSubmit={sendEmail}
+
             >
               <div className="mb-3">
                 <input
@@ -49,7 +66,8 @@ const Contact = ({ data }) => {
                   className="form-textarea w-full rounded-md"
                   rows="7"
                   placeholder="Your message"
-                />
+                  name="message"
+               />
               </div>
               <button type="submit" className="btn btn-primary">
                 Send Now
